@@ -1,9 +1,18 @@
 = load_data_infile
 
-Description goes here.
+This is a plugin for ActiveRecord.
+
+Some chunks of code for this library were taken from activerecord-fast-import
+(http://github.com/jsuchal/activerecord-fast-import)
+
+It provides a mean of calling MySql's LOAD DATA INFILE clause for importing a csv file without having to proces it with ruby.
+
+For details see MySql's manual
+
+http://dev.mysql.com/doc/refman/5.1/en/load-data.html
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
