@@ -1,4 +1,4 @@
-ActiveRecord::Base.establish_connection(:adapter => "mysql", :database => "load_data_infile_test")
+ActiveRecord::Base.establish_connection(:adapter => "mysql", :database => "load_data_infile_test", :user => "root", :password => "")
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
