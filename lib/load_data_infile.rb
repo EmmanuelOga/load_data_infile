@@ -49,7 +49,10 @@ module LoadDataInfile
     # optionally_enclosed_by :: [OPTIONAL] Character
     # table                  :: [OPTIONAL] Table name. Defaults to quoted_table_name (won't work if used from an abstract class, e.g. ActiveRecord::Base')
     # terminated_by          :: [OPTIONAL] Character
+    # disable_keys           :: [OPTIONAL] true or false. Defaults to true. Disables foreign keys while running the import.
     def load_data_infile(options = {})
+      disable_keys_option = !options.member?(:disable_keys) || options[:disable_keys]
+
       c = Context.new
 
       if options[:low_priority]
@@ -91,7 +94,11 @@ module LoadDataInfile
         c.mappings = "SET #{s}"
       end
 
+      disable_keys(c.table_name) if disable_keys_option
+
       connection.execute(ERB.new(LOAD_DATA_INFILE_SQL).result(c.binding).gsub(/^\s*\n/, ""))
+    ensure
+      enable_keys(c.table_name) if disable_keys_option
     end
 
     class Context < OpenStruct

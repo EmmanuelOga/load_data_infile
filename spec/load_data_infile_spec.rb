@@ -6,14 +6,12 @@ describe LoadDataInfile do
   end
 
   it "loads data from a csv file with headers into an ActiveRecord table" do
-    Thing.with_keys_disabled do
-      Thing.load_data_infile(
-        :path          => FIXTURE_WITH_HEADERS,
-        :columns       => %w|id field_a field_b field_c|,
-        :terminated_by => ",",
-        :ignore        => 1
-      )
-    end
+    Thing.load_data_infile(
+      :path          => FIXTURE_WITH_HEADERS,
+      :columns       => %w|id field_a field_b field_c|,
+      :terminated_by => ",",
+      :ignore        => 1
+    )
     Thing.all.map(&:attributes).should == [{
       "id"      => 71,
       "field_a" => "Hello",
@@ -23,13 +21,11 @@ describe LoadDataInfile do
   end
 
   it "loads data from a csv file without headers into an ActiveRecord table" do
-    Thing.with_keys_disabled do
-      Thing.load_data_infile(
-        :path          => FIXTURE_WITHOUT_HEADERS,
-        :terminated_by => ",",
-        :columns       => %w|id field_a field_b field_c|
-      )
-    end
+    Thing.load_data_infile(
+      :path          => FIXTURE_WITHOUT_HEADERS,
+      :terminated_by => ",",
+      :columns       => %w|id field_a field_b field_c|
+    )
     Thing.all.map(&:attributes).should == [{
       "id"      => 61,
       "field_a" => "live",
@@ -39,18 +35,16 @@ describe LoadDataInfile do
   end
 
   it "loads data from a csv file with mapping" do
-    Thing.with_keys_disabled do
-      Thing.load_data_infile(
-        :path          => FIXTURE_WITHOUT_HEADERS,
-        :terminated_by => ",",
-        :columns       => %w|id @field_a @field_b @field_c|,
-        :mappings      => {
-                            :field_a => "CONCAT('So ', @field_a)",
-                            :field_b => "CONCAT('Much ', @field_b)",
-                            :field_c => "@field_c * 10",
-                          }
-      )
-    end
+    Thing.load_data_infile(
+      :path          => FIXTURE_WITHOUT_HEADERS,
+      :terminated_by => ",",
+      :columns       => %w|id @field_a @field_b @field_c|,
+      :mappings      => {
+                          :field_a => "CONCAT('So ', @field_a)",
+                          :field_b => "CONCAT('Much ', @field_b)",
+                          :field_c => "@field_c * 10",
+                        }
+    )
     Thing.all.map(&:attributes).should == [{
       "id"      => 61,
       "field_a" => "So live",
