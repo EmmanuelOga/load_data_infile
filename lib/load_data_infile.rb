@@ -64,7 +64,7 @@ module LoadDataInfile
       c.columns = " (#{options[:columns].join(", ")}) " if options[:columns]
 
       if options[:mappings] && options[:mappings].length > 0
-        s = options[:mapping].map{|column, mapping| "#{column} = #{mapping}" }.join(",")
+        s = options[:mappings].map{|column, mapping| "#{column} = #{mapping}" }.join(",")
         c.mappings = "SET #{s}"
       end
 

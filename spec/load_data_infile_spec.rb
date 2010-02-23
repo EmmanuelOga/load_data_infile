@@ -37,4 +37,25 @@ describe LoadDataInfile do
       "field_c" => 2400
     }]
   end
+
+  it "loads data from a csv file with mapping" do
+    Thing.with_keys_disabled do
+      Thing.load_data_infile(
+        :path          => FIXTURE_WITHOUT_HEADERS,
+        :terminated_by => ",",
+        :columns       => %w|id @field_a @field_b @field_c|,
+        :mappings      => {
+                            :field_a => "CONCAT('So ', @field_a)",
+                            :field_b => "CONCAT('Much ', @field_b)",
+                            :field_c => "@field_c * 10",
+                          }
+      )
+    end
+    Thing.all.map(&:attributes).should == [{
+      "id"      => 61,
+      "field_a" => "So live",
+      "field_b" => "Much from",
+      "field_c" => 24000
+    }]
+  end
 end
