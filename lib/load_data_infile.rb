@@ -1,4 +1,5 @@
 require 'erb'
+require 'ostruct'
 
 module LoadDataInfile
   module MySql
