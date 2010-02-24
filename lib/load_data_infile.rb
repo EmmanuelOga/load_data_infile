@@ -66,33 +66,33 @@ module LoadDataInfile
 
       c.file_name = quote_value options[:path]
 
-      c.replace_or_ignore = options[:on_duplicates] if options[:on_duplicates] # REPLACE or IGNORE
+      c.replace_or_ignore = options[:on_duplicates] if [:REPLACE, :IGNORE].include?(options[:on_duplicates])
 
       c.table_name = options[:table] ? "`#{ options[:table] }`" : quoted_table_name
 
-      c.charset = "CHARACTER SET #{quote_value options[:charset]}" if options[:charset]
+      c.charset = "CHARACTER SET #{options[:charset]}" if options[:charset]
 
       if options[:terminated_by] || options[:enclosed_by] || options[:optionally_enclosed_by] || options[:escaped_by]
         c.fields_definitions = " FIELDS " # or COLUMNS
-        c.fields_definitions << " TERMINATED          BY #{ quote_value options[:terminated_by] } "          if options[:terminated_by]
-        c.fields_definitions << " ENCLOSED            BY #{ quote_value options[:enclosed_by] } "            if options[:enclosed_by]
-        c.fields_definitions << " OPTIONALLY ENCLOSED BY #{ quote_value options[:optionally_enclosed_by] } " if options[:optionally_enclosed_by]
-        c.fields_definitions << " ESCAPED             BY #{ quote_value options[:escaped_by] } "             if options[:escaped_by]
+        c.fields_definitions << " TERMINATED          BY '#{ options[:terminated_by] }' "          if options[:terminated_by]
+        c.fields_definitions << " ENCLOSED            BY '#{ options[:enclosed_by] }' "            if options[:enclosed_by]
+        c.fields_definitions << " OPTIONALLY ENCLOSED BY '#{ options[:optionally_enclosed_by] }' " if options[:optionally_enclosed_by]
+        c.fields_definitions << " ESCAPED             BY '#{ options[:escaped_by] }' "             if options[:escaped_by]
       end
 
       if options[:lines_terminated_by] || options[:lines_starting_by]
         c.lines_defitions = " LINES "
-        c.lines_defitions << " STARTING BY   #{quote_value options[:lines_starting_by]} "   if options[:lines_starting_by]
-        c.lines_defitions << " TERMINATED BY #{quote_value options[:lines_terminated_by]} " if options[:lines_terminated_by]
+        c.lines_defitions << " STARTING BY   '#{options[:lines_starting_by]}' "   if options[:lines_starting_by]
+        c.lines_defitions << " TERMINATED BY '#{options[:lines_terminated_by]}' " if options[:lines_terminated_by]
       end
 
-      c.ignores = "IGNORE #{options[:ignore]} LINES" if options[:ignore]
+      c.ignores = "IGNORE #{options[:ignore].to_i} LINES" if options[:ignore].to_i > 0
 
       c.columns = " (#{options[:columns].join(", ")}) " if options[:columns]
 
       if options[:mappings] && options[:mappings].length > 0
-        s = options[:mappings].map{|column, mapping| "#{column} = #{mapping}" }.join(",")
-        c.mappings = "SET #{s}"
+        s = options[:mappings].map{|column, mapping| "#{column} = #{mapping}" }.join(", ")
+        c.mappings = " SET #{s} "
       end
 
       disable_keys(c.table_name) if disable_keys_option
