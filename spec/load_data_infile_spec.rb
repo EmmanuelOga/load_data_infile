@@ -52,4 +52,25 @@ describe LoadDataInfile do
       "field_c" => 24000
     }]
   end
+
+  it "can use defaults" do
+    ActiveRecord::Base.load_data_infile_defaults = {
+      :terminated_by => ",",
+      :columns       => %w|id @field_a @field_b @field_c|,
+      :mappings      => {
+                          :field_a => "CONCAT('So ', @field_a)",
+                          :field_b => "CONCAT('Much ', @field_b)",
+                          :field_c => "@field_c * 10",
+                        }
+    }
+
+    Thing.load_data_infile(:path => FIXTURE_WITHOUT_HEADERS)
+
+    Thing.all.map(&:attributes).should == [{
+      "id"      => 61,
+      "field_a" => "So live",
+      "field_b" => "Much from",
+      "field_c" => 24000
+    }]
+  end
 end

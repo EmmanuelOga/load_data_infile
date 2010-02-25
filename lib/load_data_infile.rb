@@ -3,6 +3,7 @@ require 'ostruct'
 
 module LoadDataInfile
   module MySql
+    mattr_accessor :load_data_infile_defaults
 
     # Deletes all rows in table very fast, but without calling +destroy+ method
     # nor any hooks.
@@ -29,6 +30,14 @@ module LoadDataInfile
     end
 
     # Load csv from a file using MySql's LOAD DATA INFILE
+    # You can set defaults for all these options using the accesor load_data_infile_defaults:
+    #
+    # class ActiveRecord::Base
+    #   load_data_infile_defaults = {
+    #     :ignore => 1
+    #   }
+    # end
+    #
     # For details see: http://dev.mysql.com/doc/refman/5.1/en/load-data.html
     #
     # Options:
@@ -51,7 +60,9 @@ module LoadDataInfile
     # table                  :: [OPTIONAL] Table name. Defaults to quoted_table_name (won't work if used from an abstract class, e.g. ActiveRecord::Base')
     # terminated_by          :: [OPTIONAL] Character
     # disable_keys           :: [OPTIONAL] true or false. Defaults to true. Disables foreign keys while running the import.
-    def load_data_infile(options = {})
+    def load_data_infile(opt = {})
+      options = (load_data_infile_defaults || Hash.new).merge(opt)
+
       disable_keys_option = !options.member?(:disable_keys) || options[:disable_keys]
 
       c = Context.new
