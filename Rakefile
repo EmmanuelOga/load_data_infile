@@ -11,6 +11,7 @@ begin
     gem.homepage = "http://github.com/EmmanuelOga/load_data_infile"
     gem.authors = ["Emmanuel Oga"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_dependency "activerecord"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
